@@ -1,0 +1,44 @@
+programa ARC
+
+.begin
+.org 2048
+main:
+!inicializo valores en registros
+set 1, %r4
+set 2, %r5
+set resultado, %r6
+!inicializo la pila
+%sp .equ %r7
+addcc %sp, -4, %sp
+st %r4, %sp
+addcc %sp, -4, %sp
+st %r5, %sp
+call suma_con_parametros
+call suma_con_registros
+call suma_con_pila
+ld %sp, %r10
+addcc %sp, 4, %sp
+x: 1
+y: 2
+resultado: 0
+.end
+
+suma_con_parametros:
+	ld [x], %r1
+	ld [y], %r2
+	addcc %r1, %r2, %r3
+	st %r3, [resultado]
+	jmpl %r15 + 4, %r0 
+
+suma_con_registros:
+addcc %r4, %r5, %r6
+st %r6, [resultado]
+jmpl %r15 + 4, %r0
+
+suma_con_pila:
+ld %sp, %r8
+addcc %sp, 4, %sp
+ld %sp, %r9
+addcc %r8, %r9, %r11
+st %r11, %sp
+jmpl %r15 + 4, %r0
