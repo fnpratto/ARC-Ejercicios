@@ -1,7 +1,17 @@
 .begin
 .org 2048
 
+.macro push a
+	add %r14, -4, %r14
+	st a, %r14
+.endmacro
+.macro pop b
+	ld %r14, b
+	add %r14, 4, %r14
+.endmacro
+
 main:
+    push %r15		! Pusheo %r15 al stack ya que vengo de un proceso invocante y al hacer call en main pierdo la referencia
     call suma_registro
     call suma_parametros
     call suma_pila
@@ -9,8 +19,9 @@ main:
     x: 15   
     y: 9
     z: 0   
+fin:	pop %r15		! Pop de %r15 para luego devolver al proceso invocante
+	jmpl %r15, 4, %r0
 
-    jmpl %r15 + 4, %r0
 
 suma_parametros:
     ld [x], %r1
